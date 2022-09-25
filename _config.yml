@@ -101,3 +101,7 @@ theme: fluid
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+# Fluid configurations
+navbar:
+  blog_title: 瑞凤小站
