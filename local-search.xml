@@ -4,11 +4,11 @@
   
   
   <entry>
-    <title>Hello World</title>
-    <link href="/2022/09/25/hello-world/"/>
-    <url>/2022/09/25/hello-world/</url>
+    <title>拥抱Hexo</title>
+    <link href="/2022/09/25/hello-hexo/"/>
+    <url>/2022/09/25/hello-hexo/</url>
     
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    <content type="html"><![CDATA[<p>我总是说话的巨人，行动的矮子。从八年前大二第一次接触前端开始，就一直想做一个自己的博客网站，幻想着做成拥有注册、登录、评论……等等诸多功能齐全的一个大项目，方案也从一开始的裸PHP，一直追新到Laravel、Ruby on Rails、Spring、Springboot + Angular……结果我拿这些工具接了不少活，自己的站却一直处于新建文件夹状态，属实讽刺。</p><p>之前想着要不就CSDN算了，反正写博客也是给人看的嘛。但最近CSDN的表现过于令人失望，无休止的广告、会员和禁止复制——天下代码一大抄，你不让我复制我看的个🔨。我的技术分享自然是希望复制的人越多越好，所以最终还是下定决心转移到Hexo上，静态就静态吧，反正也没什么人气，没有评论的必要。之前的博客我会逐步转移到这边来，这样也才有一种自己的东西自己掌控的感觉，而不是泡在一个充斥着利益恶臭的泥潭里。</p><p>不过我也低估了Hexo的配置难度，有手生的原因（最后一次碰npm还是六年前写的那个Laravel插件），主要精力也花费在了GitHub的Action的配置上，花了大半天才搞好。CI&#x2F;CD是个好东西，可惜门槛也确实有一点，以后还是要多熟悉，毕竟长期搞一个项目，自动部署不要太舒服。</p><p>写论文去了，再写不出来要被老板锤死了。</p>]]></content>
     
     
     
