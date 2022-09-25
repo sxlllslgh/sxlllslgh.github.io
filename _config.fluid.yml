@@ -1,0 +1,13 @@
+# Fluid configurations
+navbar:
+  banner_img: /images/banners/index.jpg
+  blog_title: 瑞凤小站
+
+index:
+  banner_img: /images/banners/index.jpg
+  slogan:
+    enable: true
+    text: 瑞凤小站
+
+post:
+  banner_img: /images/banners/index.jpg
