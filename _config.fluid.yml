@@ -11,3 +11,10 @@ index:
 
 post:
   banner_img: /images/banners/index.jpg
+
+about:
+  avatar: /images/avatars/avatar.jpg
+  name: "Zuiho"
+  intro: "Self site of Zuiho"
+  icons:
+    - { class: 'iconfont icon-github-fill', link: 'https://github.com/sxlllslgh', tip: 'GitHub' }
