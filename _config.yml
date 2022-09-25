@@ -94,6 +94,11 @@ include:
 exclude:
 ignore:
 
+# Theme
+theme: fluid
+
+language: zh-CN
+
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
