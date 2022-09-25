@@ -1,4 +1,5 @@
 # Fluid configurations
+banner_img: /images/banners/index.jpg
 navbar:
   banner_img: /images/banners/index.jpg
   blog_title: 瑞凤小站
