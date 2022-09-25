@@ -27,8 +27,7 @@ jobs:
         run: npm run build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        run: npx hexo clean
-        run: npx hexo deploy
+        run: npx hexo clean && npx hexo g -d
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
