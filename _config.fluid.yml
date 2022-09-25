@@ -1,5 +1,4 @@
 # Fluid configurations
-banner_img: /images/banners/index.jpg
 navbar:
   banner_img: /images/banners/index.jpg
   blog_title: 瑞凤小站
@@ -15,6 +14,7 @@ post:
 
 about:
   avatar: /images/avatars/avatar.jpg
+  banner_img: /images/banners/index.jpg
   name: "Zuiho"
   intro: "Self site of Zuiho"
   icons:
