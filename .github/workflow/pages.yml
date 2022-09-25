@@ -23,6 +23,7 @@ jobs:
             ${{ runner.OS }}-npm-cache
       - name: Install Dependencies
         run: npm install
+        run: npm install hexo-theme-fluid
       - name: Build
         run: npm run build
       - name: Deploy

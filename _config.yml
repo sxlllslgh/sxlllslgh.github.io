@@ -95,7 +95,7 @@ exclude:
 ignore:
 
 # Theme
-# theme: fluid
+theme: fluid
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
