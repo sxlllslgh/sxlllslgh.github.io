@@ -1,6 +1,9 @@
 # Fluid configurations
 favicon: /images/avatars/avatar.jpg
 
+color:
+  navbar_bg_color: '#ffafcc'
+
 navbar:
   banner_img: /images/banners/index.jpg
   banner_img_height: 70
