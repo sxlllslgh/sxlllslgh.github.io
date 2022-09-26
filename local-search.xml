@@ -11,10 +11,18 @@
     <content type="html"><![CDATA[<p>手贱给路由器升级到了OpenWRT 22.03，结果防火墙规则文件<code>/etc/firewall.user</code>直接没了，好家伙。一查才发现新版OpenWRT用上了Firewall 4，规则管理工具从iptables升级到了nftables，貌似天然对IPv6支持，不再需要手动安装ip6tables，嗯是个好东西，用起来。</p><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>校园网总是能给你整点儿意想不到的烂活出来，比如给你分配一个&#x2F;128的IPv6地址，又或者在DHCPv6协商阶段给你返一个错误报文。前者直接违背了IPv6的初衷，导致大多数低端路由器下的设备直接拿不到IPv6地址；后者不确定是配置问题还是华为那个核心路由器（型号好像是NE80）的bug，在客户端向服务器发送Advertise报文后直接返回一个错误报文，然后又成功返回一个地址，中间这个错误报文直接导致了MikroTik的RouterOS系统判断获取失败重启协商过程从而一直拿不到地址。</p><h1 id="旧版OpenWRT的解决办法"><a href="#旧版OpenWRT的解决办法" class="headerlink" title="旧版OpenWRT的解决办法"></a>旧版OpenWRT的解决办法</h1><h2 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h2><p>在之前的OpenWRT中，我用了一个清华大佬的贴子中的NAT办法，首先安装一堆IPv6相关的包：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">opkg update<br>opkg install ip6tables kmod-ipt-nat6 kmod-ip6tables kmod-ip6tables-extra<br></code></pre></td></tr></table></figure><p>然后在自定义防火墙文件<code>/etc/firewall.user</code>中添加自定义规则：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">ip6tables -t nat -A POSTROUTING -o pppoe-wan -j MASQUERADE<br>ip6tables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT<br>ip6tables -A FORWARD -i br-lan -j ACCEPT<br></code></pre></td></tr></table></figure><h2 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h2><p>此外，OpenWRT从DHCP服务器拿到地址后，会自动添加一条路由：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">default from 2001:xxxx:xxxx:xxxx::/64 via fe80::xxxx dev pppoe-wan metric 512<br></code></pre></td></tr></table></figure><p>这条路由对路由器下的设备没有用，因此，需要在<code>/etc/hotplug.d/iface</code>文件夹下新加一条接口热插拔规则，姑且起名为<code>99-ipv6</code>（前面的数字表示执行顺序，后面的名字随便起）：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/sh</span><br>[ &quot;$ACTION&quot; = ifup ] || exit 0<br>iface=wan6 # 这个接口名称对应/etc/config/network中定义的IPv6接口<br>[ -z &quot;$iface&quot; -o &quot;$INTERFACE&quot; = &quot;$iface&quot; ] || exit 0<br>ip -6 route add default via fe80::xxxx dev pppoe-wan metric 1<br></code></pre></td></tr></table></figure><p>比较稳妥的办法就像上面这样，记住默认路由中的DHCP服务器地址，然后添加一条metric比较小的默认路由。</p><blockquote><p>清华大佬用了sed替换上面那条默认路由，但我的网络中获取IPv6地址有延迟，导致一开始没有默认路由，于是就失败了。此外，第二条删除默认路的代码也有问题，语法有错。附上清华大佬的默认路由替换脚本：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/sh</span><br>[ &quot;$ACTION&quot; = ifup ] || exit 0<br>iface=wan6<br>[ -z &quot;$iface&quot; -o &quot;$INTERFACE&quot; = &quot;$iface&quot; ] || exit 0<br>ip -6 route add `ip -6 route show default | sed -e &#x27;s/from [^ ]* //&#x27;| sed -e &#x27;s/metric [0-9]*/metric 1/&#x27;`<br>ip -6 route del `ip -6 route show default | grep from`<br></code></pre></td></tr></table></figure></blockquote><p>到这里应该内网就能上IPv6了。</p><h1 id="新版OpenWRT的解决办法"><a href="#新版OpenWRT的解决办法" class="headerlink" title="新版OpenWRT的解决办法"></a>新版OpenWRT的解决办法</h1><h2 id="新防火墙"><a href="#新防火墙" class="headerlink" title="新防火墙"></a>新防火墙</h2><p>新版的防火墙规则大改，研究了半天后终于搞好了。路由的热插拔脚本仍然有，但不需要装一堆IPv6的包了，只需要在<code>/etc/config/firewall</code>中添加一条NAT规则：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs conf">config nat<br>option name &#x27;IPv6 Masquerade&#x27;<br>option family &#x27;ipv6&#x27;<br>option src &#x27;wan&#x27;<br>option target &#x27;MASQUERADE&#x27;<br>list proto &#x27;all&#x27;<br></code></pre></td></tr></table></figure><p>这条规则对应之前自定义防火墙规则的第一条，用于开启伪装。</p><p>另外两条我没有找到OpenWRT的uci实现的办法，只能修改<code>/etc/nftables.d/10-custom-filter-chains.nft</code>文件。这个本质上就是nftables版的<code>/etc/firewall.user</code>，只是语法有了很大变化。只需要修改一个post_forward链即可：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs conf">chain user_post_forward &#123;<br>    ct state established,related accept # 对应上面第二条conntrack规则<br>    iifname br-lan accept # 对应上面第三条规则<br>&#125;<br></code></pre></td></tr></table></figure><p>至此三条自定义防火墙规则升级完成，不再需要ip6tables了。</p><h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>其实新版OpenWRT中仍然保留了对Firewall 3的兼容性，<code>firewall.user</code>规则仍然可以用，但多拨的MWAN 3貌似和此有冲突（只是貌似，也不确定是不是MWAN 3自己对Firewall 4兼容有问题），因此我先把防火墙改上来，有空再解决多拨的问题。</p>]]></content>
     
     
+    <categories>
+      
+      <category>Blog</category>
+      
+    </categories>
+    
     
     <tags>
       
-      <tag>网络,OpenWRT</tag>
+      <tag>网络</tag>
+      
+      <tag>OpenWRT</tag>
       
     </tags>
     
@@ -29,6 +37,12 @@
     
     <content type="html"><![CDATA[<p>我总是说话的巨人，行动的矮子。从八年前大二第一次接触前端开始，就一直想做一个自己的博客网站，幻想着做成拥有注册、登录、评论……等等诸多功能齐全的一个大项目，方案也从一开始的裸PHP，一直追新到Laravel、Ruby on Rails、Spring、Springboot + Angular……结果我拿这些工具接了不少活，自己的站却一直处于新建文件夹状态，属实讽刺。</p><p>之前想着要不就CSDN算了，反正写博客也是给人看的嘛。但最近CSDN的表现过于令人失望，无休止的广告、会员和禁止复制——天下代码一大抄，你不让我复制我看的个🔨。我的技术分享自然是希望复制的人越多越好，所以最终还是下定决心转移到Hexo上，静态就静态吧，反正也没什么人气，没有评论的必要。之前的博客我会逐步转移到这边来，这样也才有一种自己的东西自己掌控的感觉，而不是泡在一个充斥着利益恶臭的泥潭里。</p><p>不过我也低估了Hexo的配置难度，有手生的原因（最后一次碰npm还是六年前写的那个Laravel插件），主要精力也花费在了GitHub的Action的配置上，花了大半天才搞好。CI&#x2F;CD是个好东西，可惜门槛也确实有一点，以后还是要多熟悉，毕竟长期搞一个项目，自动部署不要太舒服。</p><p>写论文去了，再写不出来要被老板锤死了。</p>]]></content>
     
+    
+    <categories>
+      
+      <category>Diary</category>
+      
+    </categories>
     
     
   </entry>
