@@ -3,20 +3,28 @@ favicon: /images/avatars/avatar.jpg
 
 navbar:
   banner_img: /images/banners/index.jpg
+  banner_img_height: 70
+  banner_mask_alpha: 0.7
   blog_title: 瑞凤小站
 
 index:
   banner_img: /images/banners/index.jpg
+  banner_img_height: 70
+  banner_mask_alpha: 0.7
   slogan:
     enable: true
     text: 瑞凤小站
 
 post:
   banner_img: /images/banners/index.jpg
+  banner_img_height: 70
+  banner_mask_alpha: 0.7
 
 about:
   avatar: /images/avatars/avatar.jpg
   banner_img: /images/banners/index.jpg
+  banner_img_height: 70
+  banner_mask_alpha: 0.7
   name: "Zuiho"
   intro: "Self site of Zuiho"
   icons:
