@@ -1,7 +1,11 @@
 ---
 title: OpenWRT使用nftables实现IPv6 NAT
 date: 2022-09-26 14:20:40
-tags: 网络,OpenWRT
+categories:
+- Blog
+tags:
+- 网络
+- OpenWRT
 ---
 手贱给路由器升级到了OpenWRT 22.03，结果防火墙规则文件`/etc/firewall.user`直接没了，好家伙。一查才发现新版OpenWRT用上了Firewall 4，规则管理工具从iptables升级到了nftables，貌似天然对IPv6支持，不再需要手动安装ip6tables，嗯是个好东西，用起来。
 

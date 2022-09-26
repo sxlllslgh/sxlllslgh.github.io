@@ -1,4 +1,6 @@
 # Fluid configurations
+favicon: /images/avatars/avatar.jpg
+
 navbar:
   banner_img: /images/banners/index.jpg
   blog_title: 瑞凤小站
@@ -19,3 +21,4 @@ about:
   intro: "Self site of Zuiho"
   icons:
     - { class: 'iconfont icon-github-fill', link: 'https://github.com/sxlllslgh', tip: 'GitHub' }
+    - { class: 'iconfont icon-mail', link: 'mailto:sxlllslgh@gmail.com', tip: 'Mail' }
