@@ -19,6 +19,9 @@ index:
 post:
   banner_img: /images/banners/index.jpg
   banner_img_height: 70
+  mermaid:
+    enable: true
+    specific: false
 
 about:
   avatar: /images/avatars/avatar.jpg

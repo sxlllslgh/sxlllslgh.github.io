@@ -92,6 +92,24 @@ chain user_post_forward {
 
 至此三条自定义防火墙规则升级完成，不再需要ip6tables了。
 
+# 其他设置
+
+有些网络，可能需要单独设置DHCPv6相关的设置，比如路由通告（RA）等，以我的网络为例，需要修改`/etc/config/dhcp`里面lan相关的设置：
+
+```conf
+config dhcp 'lan'
+	option interface 'lan'
+	option start '100'
+	option limit '150'
+	option leasetime '12h'
+	option dhcpv4 'server'
+	option dhcpv6 'server'
+	# 主要就是下面这三条
+	option ra 'server'
+	option ra_default '1'
+	option ra_management '2'
+```
+
 # 后记
 
-其实新版OpenWRT中仍然保留了对Firewall 3的兼容性，`firewall.user`规则仍然可以用，但多拨的MWAN 3貌似和此有冲突（只是貌似，也不确定是不是MWAN 3自己对Firewall 4兼容有问题），因此我先把防火墙改上来，有空再解决多拨的问题。
+其实新版OpenWRT中仍然保留了对Firewall 3的兼容性，`firewall.user`规则仍然可以用，但多拨的mwan3貌似和此有冲突（只是貌似，也不确定是不是mwan3自己对Firewall 4兼容有问题），因此我先把防火墙改上来，有空再解决多拨的问题。
