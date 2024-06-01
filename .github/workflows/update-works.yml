@@ -1,0 +1,34 @@
+name: Update Works
+
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Get works with token
+      run: "curl --header 'Accept: application/json' --header 'Authorization: Bearer ${{ secrets.ORCID_ACCESS_TOKEN }}' -o ${{ vars.WORKS_FILE }} https://pub.orcid.org/v3.0/${{ vars.ORCID_ID }}/works"
+
+    - name: Make sure the works file is tracked
+      run: git add ${{ vars.WORKS_FILE }}
+
+    - name: Judge if file changed
+      id: changed
+      run: git diff -s --cached ${{ vars.WORKS_FILE }}
+
+    - name: Update works
+      if: ${{ steps.changed.outcome == 'failure' }}
+      run: |
+          git config --global user.name '${{ vars.GIT_USERNAME }}'
+          git config --global user.email '${{ vars.GIT_EMAIL }}'
+          git commit -am "Automatically update works."
+          git push
