@@ -1,0 +1,47 @@
+name: Update Record
+
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Get record with token
+      uses: sxlllslgh/orcid-record-action@v1
+      id: record
+      with:
+        orcid-id: ${{ vars.ORCID_ID }}
+        access-token: ${{ secrets.ORCID_ACCESS_TOKEN }}
+        
+    - name: Write record to file
+      run: echo ${{ steps.record.outputs.record }} > ${{ vars.RECORD_FILE }}
+      
+    - name: Make sure the record file is tracked
+      run: git add ${{ vars.RECORD_FILE }}
+
+    - name: Judge if file changed
+      id: changed
+      continue-on-error: true
+      run: git diff --exit-code ${{ vars.RECORD_FILE }}
+
+    - name: Judge if staged file changed
+      id: cached
+      continue-on-error: true
+      run: git diff --exit-code --cached ${{ vars.RECORD_FILE }}
+
+    - name: Update record
+      if: ${{ steps.changed.outcome == 'failure' || steps.cached.outcome == 'failure' }}
+      run: |
+          git config --global user.name '${{ vars.GIT_USERNAME }}'
+          git config --global user.email '${{ vars.GIT_EMAIL }}'
+          git commit -am "Automatically update record."
+          git push
