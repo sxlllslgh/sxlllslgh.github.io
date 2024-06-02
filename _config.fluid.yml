@@ -2,7 +2,7 @@
 favicon: /images/avatars/avatar.jpg
 
 color:
-  navbar_bg_color: '#ffafcc'
+  navbar_bg_color: '#4684cc'
 
 navbar:
   banner_img: /images/banners/index.jpg
@@ -11,14 +11,14 @@ navbar:
 
 index:
   banner_img: /images/banners/index.jpg
-  banner_img_height: 70
+  banner_img_height: 100
   slogan:
     enable: true
     text: 瑞凤小站
 
 post:
   banner_img: /images/banners/index.jpg
-  banner_img_height: 70
+  banner_img_height: 30
   mermaid:
     enable: true
     specific: false
@@ -26,7 +26,7 @@ post:
 about:
   avatar: /images/avatars/avatar.jpg
   banner_img: /images/banners/index.jpg
-  banner_img_height: 70
+  banner_img_height: 50
   name: "Zuiho"
   intro: "Self site of Zuiho"
   icons:
