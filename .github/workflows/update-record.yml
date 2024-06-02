@@ -21,9 +21,7 @@ jobs:
       with:
         orcid-id: ${{ vars.ORCID_ID }}
         access-token: ${{ secrets.ORCID_ACCESS_TOKEN }}
-        
-    - name: Write record to file
-      run: echo ${{ steps.record.outputs.record }} > ${{ vars.RECORD_FILE }}
+        record-file: ${{ vars.RECORD_FILE }}
       
     - name: Make sure the record file is tracked
       run: git add ${{ vars.RECORD_FILE }}
