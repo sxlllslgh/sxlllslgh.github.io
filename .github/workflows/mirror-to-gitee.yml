@@ -2,8 +2,8 @@ name: Mirror To GitEE
 
 on:
   page_build:
-    branches: ["gh-pages"]
-    
+  workflow_dispatch:
+
 jobs:
   repo-sync:
     runs-on: ubuntu-latest
