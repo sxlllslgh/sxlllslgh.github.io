@@ -1,68 +1,73 @@
 ---
-title: ORCID Record Action Usage
-lang: en-US
+title: 使用GitHub Action自动抓取ORCID记录
+lang: zh-CN
 date: 2024-06-03 11:58:00
+categories:
+  - Blog
 tags:
+  - 持续集成
+  - 前端
 ---
 
-# ORCID Record Action
-I developed a GitHub action to automatically fetch record, including personal information, publications, authors, etc. The action page is available at [GitHub Action Marketplace](https://github.com/marketplace/actions/orcid-record-action), and here is the manual.
+# ORCID Record GitHub Action
+我做了一个GitHub Action，利用ORCID的公共API自动抓取研究人员的记录，包括其发表、作者、期刊和时间等等。因为原始API这些信息是位于不同URI下的，因此我进行了整合以写入到一个单独的JSON文件中。这个Action目前可以在[GitHub Action市场](https://github.com/marketplace/actions/orcid-record-action)中安装，用法如下。
 
-## ORCID API Configurations
-### 1. Register your personal public API client
-Log in your ORCID account and visit the [developer tools](https://orcid.org/developer-tools) page, create your personal public API client. Detailed steps please refer the [offical document](https://info.orcid.org/documentation/features/public-api). You can fill in application information and redirect URIs as you like, it has no effect on the subsequent steps.
+## ORCID API配置
+### 1. 注册你的个人公共API客户端
+首先登录你的ORCID账号，进入[developer tools](https://orcid.org/developer-tools)页面创建你的个人API客户端。详细的步骤请参考[官方文档](https://info.orcid.org/documentation/features/public-api)。应用信息和重定向地址可以随便填。
 
-Please remember your __Client ID__ and __Client secret__.
+记住你的 __Client ID__ 和 __Client secret__。
 
-### 2. Get your access token
-In command line, use your __Client ID__ and __Client secret__ to get your __access token__. It should have a very long expiration time (about 20 years):
+### 2. 获取你的访问令牌
+在命令行中，用你的 __Client ID__ 和 __Client secret__ 来获取你的 __访问令牌__。官方目前默认给20年的超长有效期，因此获取这个令牌的命令只需要执行一次，我没有写到Action中：
 ```bash
 curl -H "Accept: application/json" -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode
  "client_id=CLIENT_ID" --data-urlencode "client_secret=CLIENT_SECRET" --data-urlencode
  "scope=/read-public" --data-urlencode "grant_type=client_credentials" https://orcid.org/oauth/token
 ```
-Then you may get a response in JSON format:
+然后你就可以得到一个JSON格式的响应：
 ```json
 {"access_token":"xxx","token_type":"bearer","refresh_token":"xxx","expires_in":631138518,"scope":"/read-public","orcid":null}
 ```
-Please remember the __access_token__.
+这里**access_toke**就是要记住的**访问令牌**。
 
-## Inputs
+## 输入
 ### `orcid-id`
-**Required** The ORCID ID of researcher.
+**必须** 研究人员的ORCID ID。
 
 ### `access-token`
-**Required** The ORCID access token obtained above.
+**必须** 上面获取到的**访问令牌**。
 
 ### `record-file`
-**Optional** The record json file to write. If this input was given, the output `record` will not be generated.
+**可选** 要写入结果的JSON文件地址（相对于仓库根目录）。如果这个输入给了，`record`输出就不会有。
 
-## Outputs
+## 输出
 ### `record`
-The record string in JSON format. This output only exists when the `record-file` input is not given.
+JSON格式的记录字符串。这个输出只有在`record-file`输入没有的时候才会产生。
 
-## Example usage
-### 1. (Optional) Save your access token and other variables in GitHub
-Create a new __repository secret__ in https://github.com/USERNAME/REPOSITORY/settings/secrets/actions, create a new repository secret to store your __access_token__ obtained above. Here we name it __ORCID_ACCESS_TOKEN__.
+## 示例
+### 1. （可选）在GitHub中保存你的访问令牌和变量
+在 https://github.com/USERNAME/REPOSITORY/settings/secrets/actions 中创建新的仓库级别密钥（Secret）来保存你的访问令牌，这里我们将其命名为**ORCID_ACCESS_TOKEN**。
 
-Further, in this page, switch to the __Variables__ tab, create follow variables for your workflow:
-| Name | Description | Example |
-|:-:|:-:|:-:|
-| ORCID_ID | Your ORCID id. | XXXX-XXXX-XXXX-XXXX |
-| ORCID_ACCESS_TOKEN | The ORCID public api access token. | xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx |
-| RECORD_FILE | The related path of the works file in your repository. | assets/record.json |
+然后还是这个页面，切到**Variables**选项卡，创建以下的变量：
 
-### 2. Create an action to auto update your ORCID record.
+|         名称         |             描述              |                  示例                  |
+|:------------------:|:---------------------------:|:------------------------------------:|
+|      ORCID_ID      |        研究人员的ORCID ID        |         XXXX-XXXX-XXXX-XXXX          |
+| ORCID_ACCESS_TOKEN |       你的ORCID API访问令牌       | xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx |
+|    RECORD_FILE     | 要写入记录的JSON文件路径（可选，相对于仓库根目录） |         assets/record.json           |
 
-The workflow's code is as follows:
+### 2. 创建一个Action来自动更新ORCID记录
+
+示例工作流代码如下：
 ```yaml
 name: Update Record
 
 on:
-  # Create a scheduled task, in this example we run it at the first day of every month.
+  # 创建一个定期循环任务，这里我们设置为每月1号0点0分
   schedule:
     - cron: "0 0 1 * *"
-  # Enable manually executing.
+  # 允许手动执行工作流
   workflow_dispatch:
 
 permissions:
@@ -75,7 +80,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # Fetch record with orcid id and access token
+    # 使用ORCID ID和访问令牌抓取ORCID记录
     - name: Get record with token
       uses: sxlllslgh/orcid-record-action@v1
       id: record
@@ -87,7 +92,7 @@ jobs:
     - name: Make sure the record file is tracked
       run: git add ${{ vars.RECORD_FILE }}
 
-    # If record file changed, return exit code 1, otherwise 0.
+    # 如果记录文件有变化，返回退出代码1，否则返回0
     - name: Judge if file changed
       id: changed
       continue-on-error: true
