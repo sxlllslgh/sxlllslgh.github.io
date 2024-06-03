@@ -3,7 +3,7 @@ favicon: /images/avatars/avatar.jpg
 
 custom_css: /assets/custom.css
 
-custom_html: '<script defer src="https://vercount.one/js"></script>'
+custom_html: '<script defer src="https://vercount.one/js"></script><script src="https://kit.fontawesome.com/e3536555f9.js" crossorigin="anonymous"></script>'
 
 color:
   navbar_bg_color: '#4684cc'
