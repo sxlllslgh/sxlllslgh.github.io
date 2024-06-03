@@ -1,6 +1,8 @@
 # Fluid configurations
 favicon: /images/avatars/avatar.jpg
 
+custom_html: '<script defer src="https://vercount.one/js"></script>'
+
 color:
   navbar_bg_color: '#4684cc'
 
@@ -32,3 +34,6 @@ about:
   icons:
     - { class: 'iconfont icon-github-fill', link: 'https://github.com/sxlllslgh', tip: 'GitHub' }
     - { class: 'iconfont icon-mail', link: 'mailto:sxlllslgh@gmail.com', tip: 'Mail' }
+
+footer:
+  content: '<div class="statistics"><span id="busuanzi_container_site_pv" style="display: inline;">总访问量 <span id="busuanzi_value_site_pv">6713474</span> 次 </span><span id="busuanzi_container_site_uv" style="display: inline;">总访客数 <span id="busuanzi_value_site_uv">4074171</span> 人</span></div>'
