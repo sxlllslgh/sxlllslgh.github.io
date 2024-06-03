@@ -5,3 +5,16 @@
 .top-nav-collapse a {
     color: #F8F4E1 !important;
 }
+
+.publication-item-link {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+.publication-item-link:hover {
+    color: #03AED2 !important;
+}
+
+.fa-solid:hover {
+    color: #03AED2 !important;
+}

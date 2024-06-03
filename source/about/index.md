@@ -10,14 +10,42 @@ date: 2022-09-25 16:18:11
     fetch('/assets/record.json').then(response => response.json()).then(json => {
         for (const [i, work] of json['activities-summary'].works.group.entries()) {
             const item = document.createElement('li');
-            const title = document.createElement('h4');
-            title.innerHTML = `${i + 1}. ${work['work-summary'][0].title.title.value}`;
-            item.appendChild(title);
-            const journal = document.createElement('span');
-            journal.innerHTML = work["work-summary"][0]["journal-title"].value;
-            journal.style.fontStyle = 'italic';
-            journal.style.fontWeight = 'bold';
-            item.appendChild(journal);
+            const contributors = work['work-summary'][0].contributors.contributor;
+            const authorArray = [];
+            if (contributors != null) {
+                const authors = document.createElement('div');
+                for (const contributor of contributors) {
+                    if (contributor['contributor-attributes']['contributor-role'] == 'author') {
+                        if (contributor['credit-name'].value == `${json.person.name["given-names"].value} ${json.person.name["family-name"].value}`) {
+                            authorArray.push(`<span style="font-weight: bold">${contributor['credit-name'].value}</span>`);
+                        } else {
+                           authorArray.push(contributor['credit-name'].value);
+                        }
+                    }
+                }
+                authors.innerHTML = authorArray.join(', ');
+            }
+            let citationButton = '';
+            if (work["work-summary"][0].citation != null) {
+                citationButton = `<a onclick="navigator.clipboard.writeText('${work["work-summary"][0].citation["citation-value"]}')"><i class="fa-solid fa-quote-right"></i></a>`;
+            }
+            item.innerHTML = `
+                <div style="display: flex; flex-direction: column; justify-content: flex-start; align-items: left">
+                    <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center">
+                        <h3>${i + 1}. <a class="publication-item-link" href="${work['work-summary'][0]['external-ids']['external-id'][0]['external-id-url'].value}" target="_blank">${work['work-summary'][0].title.title.value}</a></h3>
+                        <span style="justify-self: flex-end">${work["work-summary"][0]["publication-date"].year.value}.${work["work-summary"][0]["publication-date"].month.value}</span>
+                    </div>
+                    <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center">
+                        <div style="display: flex; flex-direction: column; justify-content: flex-start; align-items: left">
+                            <div>${authorArray.join(', ')}</div>
+                            <div style="display: flex; flex-direction: row; justify-content: left; align-items: center">
+                                <span style="font-style: italic; font-weight: bold">${work["work-summary"][0]["journal-title"].value}</span>
+                            </div>
+                        </div>
+                        ${citationButton}
+                    </div>
+                </div>
+            `;
             document.getElementById('my-works').appendChild(item);
         }
     });
