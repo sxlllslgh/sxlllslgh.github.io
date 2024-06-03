@@ -1,6 +1,8 @@
 # Fluid configurations
 favicon: /images/avatars/avatar.jpg
 
+custom_css: /assets/custom.css
+
 custom_html: '<script defer src="https://vercount.one/js"></script>'
 
 color:
