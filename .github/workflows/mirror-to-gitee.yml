@@ -1,7 +1,7 @@
 name: Mirror To GitEE
 
 on:
-  deployment:
+  page_build:
     branches: ["gh-pages"]
     
 jobs:
