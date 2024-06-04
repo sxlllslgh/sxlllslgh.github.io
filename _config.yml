@@ -8,7 +8,9 @@ subtitle: ''
 description: ''
 keywords:
 author: Zuiho
-language: zh-CN
+language:
+  - zh-CN
+  - en-US
 timezone: 'Asia/Shanghai'
 
 # URL

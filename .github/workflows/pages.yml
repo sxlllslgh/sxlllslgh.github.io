@@ -50,3 +50,4 @@ jobs:
           mappings: 'sxlllslgh.github.io=>blog'
           clone_style: 'ssh'
           force_update: true
+          debug: true
