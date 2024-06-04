@@ -12,6 +12,12 @@ navbar:
   banner_img: /images/banners/index.jpg
   banner_img_height: 70
   blog_title: 瑞凤小站
+  menu:
+    - { key: "home", link: "/", icon: "fa-solid fa-house" }
+    - { key: "archive", link: "/archives/", icon: "fa-solid fa-folder" }
+    - { key: "category", link: "/categories/", icon: "fa-solid fa-list" }
+    - { key: "tag", link: "/tags/", icon: "fa-solid fa-tags" }
+    - { key: "about", link: "/about/", icon: "fa-solid fa-user" }
 
 index:
   banner_img: /images/banners/index.jpg
